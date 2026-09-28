@@ -1,0 +1,34 @@
+# Agent Manifest — AgentRegistry entry point
+# AgentRegistry (mediator/registry/agent_registry.py) reads every key below at
+# ROOT level — do NOT nest under an `agent:` block (the registry loader contract).
+id: "TEL-C2-106"
+name: "Telecom Alarm-Correlation Evidence Queue Agent"
+# Provisional = lower(industry). An open platform question asks to confirm the
+# canonical derivation; this is NOT the secrets-provider namespace, which stays
+# "agent1000/agent-templates" in src/api/server.py.
+namespace: "tel"
+version: "1.0.0"
+enabled: true
+category: "Cat 2"
+industry: "TEL"
+
+# L1 base graph — inherited directly. Any L2 pattern name in the SoT is a
+# reference only, never a base class (the L2 tier is abolished).
+base_type: "AgentBaseGraph"
+
+# Entry point — single dotted import path (module.Class); AgentRegistry does
+# manifest["class"].rsplit(".", 1) to get (module, class_name).
+class: "src.graph.graph.TelecomAlarmCorrelationQueueAgent"
+
+# Security
+required_trust_level: "VERIFIED_EXTERNAL"
+
+# Compile-time gates — declare every secret/extra actually used.
+# secrets: [] because server.py reads ANTHROPIC_API_KEY via .get() and degrades
+# to llm=None rather than require()-ing it (the platform's boot-without-key rule).
+requires:
+  secrets: []
+  extras: ["anthropic"]
+
+# Runtime parameters live in config/config.yaml — AgentRegistry loads that file
+# separately and passes it as Graph(config=...). Do NOT put them here.

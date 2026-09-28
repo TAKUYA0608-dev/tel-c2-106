@@ -1,0 +1,7 @@
+# Runtime parameters — loaded by AgentRegistry, passed as Graph(config=...).
+# This is a SEPARATE file from config/agent.yaml (the static manifest). Keys are
+# kept verbatim from the pre-migration manifest so behaviour does not change.
+# agent.yaml is the registry manifest; config.yaml holds the runtime configuration.
+
+max_retry: 3
+timeout_seconds: 30

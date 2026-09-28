@@ -1,0 +1,44 @@
+[project]
+name = "tel-c2-106"
+version = "1.0.0"
+description = "Telecom Alarm-Correlation Evidence Queue Agent — AgentCore Template"
+requires-python = ">=3.11"
+# The framework (agenticstar-agentcore) is NOT a public-PyPI dependency; it is
+# provided by CI per repo arm — a local SDK stub on PYTHONPATH for older repos,
+# or installed from the package registry for wheel-era repos (see the dual-mode
+# run-tests job in the CI configuration). Pinning it here would make `pip install -e .`
+# fail because it is not resolvable from the default index.
+dependencies = [
+    "agenticstar-agentcore[marketplace,openai]==1.0.3",]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.0.3",
+    "pytest-cov==5.0.0",
+    "pytest-asyncio==1.4.0",
+    "ruff==0.4.4",
+    "mypy==1.10.0",
+]
+
+[build-system]
+requires = ["setuptools==68.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+exclude = ["src/examples/"]
+
+[[tool.mypy.overrides]]
+# agenticstar-agentcore ships no py.typed marker, so framework.*/shared.* resolve to Any (SDK packaging gap, not fixable here).
+module = ["framework.*", "shared.*", "yaml", "sniffio", "sniffio.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# Subclassing the SDK's Any-typed bases (FunctionNode, AgentBaseGraph, GraphNode, AgentState) is the sanctioned pattern.
+module = "src.*"
+disallow_subclassing_any = false
